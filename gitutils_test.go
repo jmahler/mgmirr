@@ -80,6 +80,26 @@ func TestRpmMirror(t *testing.T) {
 		}
 		testBranches(t, dir, cases)
 	})
+
+	t.Run("SetupRpmBranches", func(t *testing.T) {
+		err = mgmirr.SetupRpmBranches(repo)
+		if err != nil {
+			t.Fatalf("SetupRpmBranches failed: %v", err)
+		}
+
+		cases := []BranchCase{
+			{"fedora/f29", true},
+			{"fedora/f31", true},
+			{"tes/fedora/f31", false},
+			{"fedora/f2", false},
+			{"fedora/f3", false},
+			{"centos/c6", true},
+			{"centos/c7", true},
+		}
+		testBranches(t, dir, cases)
+
+		testTrackingBranch(t, dir, "fedora/f31", "remotes/fedora/f31")
+	})
 }
 
 // Split branch output in to lines and trim whitespace.
@@ -104,6 +124,23 @@ func splitBranchOutput(in string) []string {
 type BranchCase struct {
 	Branch string
 	Exists bool
+}
+
+func testTrackingBranch(t *testing.T, dir string, branch string, tracking_branch string) {
+	_, err := exec.Command("git", "-C", dir, "checkout", branch).Output()
+	if err != nil {
+		t.Fatalf("unable to git -C '%s' checkout '%s': %v", dir, branch, err)
+	}
+
+	out_byte, err := exec.Command("git", "-C", dir, "checkout").Output()
+	if err != nil {
+		t.Fatalf("unable to run git -C '%s' checkout: %v", dir, err)
+	}
+	out := string(out_byte)
+
+	if !strings.Contains(out, tracking_branch) {
+		t.Errorf("incorrect tracking branch, expected '%s' in '%s'", tracking_branch, out)
+	}
 }
 
 func testBranches(t *testing.T, dir string, cases []BranchCase) {
