@@ -46,3 +46,28 @@ func setupRpmRemote(repo *git.Repository, cfg *config.RemoteConfig) error {
 
 	return nil
 }
+
+func FetchAll(repo *git.Repository, rcs []config.RemoteConfig) error {
+	var one_worked bool = false
+
+	for _, c := range rcs {
+		err := repo.Fetch(&git.FetchOptions{
+			RemoteName: c.Name,
+		})
+		if err != nil {
+			if err == git.NoErrAlreadyUpToDate {
+				// OK
+			} else {
+				log.Printf("git fetch remote '%v' failed: %v", c.Name, err)
+			}
+		} else {
+			one_worked = true
+		}
+	}
+
+	if one_worked {
+		return nil
+	} else {
+		return fmt.Errorf("unable to fetch any remotes")
+	}
+}

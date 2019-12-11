@@ -64,4 +64,72 @@ func TestRpmMirror(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("FetchAll", func(t *testing.T) {
+		err = mgmirr.FetchAll(repo, cfg)
+		if err != nil {
+			t.Fatalf("FetchAll failed: %v", err)
+		}
+
+		cases := []BranchCase{
+			{"remotes/fedora/f29", true},
+			{"remotes/fedora/f31", true},
+			{"remotes/fedora/f2", false},
+			{"remotes/fedora/f3", false},
+			{"remotes/centos/c6", true},
+			{"remotes/centos/c7", true},
+		}
+		testBranches(t, dir, cases)
+	})
+}
+
+// Split branch output in to lines and trim whitespace.
+//
+//    git branch -a
+//      origin/f29
+//    * origin/f30
+//      remotes/fedora/f29
+//
+//    ["origin/f29", "origin/f30", "remotes/fedora/f29"]
+//
+func splitBranchOutput(in string) []string {
+	lines := strings.Split(in, "\n")
+	branches := make([]string, len(lines))
+	for i, line := range lines {
+		branches[i] = strings.TrimSpace(strings.TrimPrefix(line, "*"))
+	}
+
+	return branches
+}
+
+type BranchCase struct {
+	Branch string
+	Exists bool
+}
+
+func testBranches(t *testing.T, dir string, cases []BranchCase) {
+	t.Helper()
+
+	out_byte, err := exec.Command("git", "-C", dir, "branch", "-a").Output()
+	if err != nil {
+		t.Fatalf("unable to run git branch -a on '%s': %v", dir, err)
+	}
+	branches := splitBranchOutput(string(out_byte))
+
+	for _, tc := range cases {
+		t.Run(fmt.Sprintf("%s", tc.Branch), func(t *testing.T) {
+			found := false
+			for _, branch := range branches {
+				if tc.Branch == branch {
+					found = true
+					break
+				}
+			}
+			if !found && tc.Exists {
+				t.Errorf("didn't find branch '%s'", tc.Branch)
+			} else if found && !tc.Exists {
+				t.Errorf("found unexpected branch '%s'", tc.Branch)
+			}
+		})
+	}
 }
