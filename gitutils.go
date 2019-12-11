@@ -46,3 +46,33 @@ func setupRpmRemote(repo *git.Repository, cfg *RemoteConfig) error {
 
 	return nil
 }
+
+func FetchAll(repo *git.Repository) error {
+	var one_worked bool = false
+
+	remotes, err := repo.Remotes.List()
+	if err != nil {
+		return fmt.Errorf("unable to list remotes: %v", err)
+	}
+
+	for _, remote := range remotes {
+		r, err := repo.Remotes.Lookup(remote) // get Remote obj
+		if err != nil {
+			log.Printf("unable to find remote '%v': %v", remote, err)
+			continue
+		}
+
+		err = r.Fetch(nil, nil, "")
+		if err != nil {
+			log.Printf("git fetch remote '%v' failed: %v", remote, err)
+		} else {
+			one_worked = true
+		}
+	}
+
+	if one_worked {
+		return nil
+	} else {
+		return fmt.Errorf("unable to fetch any remotes")
+	}
+}
