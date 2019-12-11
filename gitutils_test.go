@@ -81,6 +81,24 @@ func TestRpmMirror(t *testing.T) {
 		}
 		testBranches(t, dir, cases)
 	})
+
+	t.Run("SetupRpmBranches", func(t *testing.T) {
+		err = mgmirr.SetupRpmBranches(repo)
+		if err != nil {
+			t.Fatalf("SetupRpmBranches failed: %v", err)
+		}
+
+		cases := []BranchCase{
+			{"fedora/f29", true},
+			{"fedora/f31", true},
+			{"tes/fedora/f31", false},
+			{"fedora/f2", false},
+			{"fedora/f3", false},
+			{"centos/c6", true},
+			{"centos/c7", true},
+		}
+		testBranches(t, dir, cases)
+	})
 }
 
 // Split branch output in to lines and trim whitespace.
