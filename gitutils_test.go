@@ -99,6 +99,51 @@ func TestRpmMirror(t *testing.T) {
 		}
 		testBranches(t, dir, cases)
 	})
+
+	t.Run("PullAll", func(t *testing.T) {
+
+		// before, all up to date
+		cases := []BranchStatusCase{
+			{"fedora/f29", true},
+			{"fedora/f30", true},
+			{"fedora/f31", true},
+			{"centos/c6", true},
+			{"centos/c7", true},
+		}
+		testBranchStatus(t, dir, cases)
+
+		branches := []string{
+			"fedora/f29",
+			"fedora/f31",
+			"centos/c7",
+		}
+		resetBranches(t, dir, branches)
+
+		// now some are out of date
+		cases = []BranchStatusCase{
+			{"fedora/f29", false},
+			{"fedora/f30", true},
+			{"fedora/f31", false},
+			{"centos/c6", true},
+			{"centos/c7", false},
+		}
+		testBranchStatus(t, dir, cases)
+
+		err = mgmirr.PullAll(repo)
+		if err != nil {
+			t.Error(err)
+		}
+
+		// now all should be up to date
+		cases = []BranchStatusCase{
+			{"fedora/f29", true},
+			{"fedora/f30", true},
+			{"fedora/f31", true},
+			{"centos/c6", true},
+			{"centos/c7", true},
+		}
+		testBranchStatus(t, dir, cases)
+	})
 }
 
 // Split branch output in to lines and trim whitespace.
@@ -147,6 +192,51 @@ func testBranches(t *testing.T, dir string, cases []BranchCase) {
 				t.Errorf("didn't find branch '%s'", tc.Branch)
 			} else if found && !tc.Exists {
 				t.Errorf("found unexpected branch '%s'", tc.Branch)
+			}
+		})
+	}
+}
+
+// Reset branches back to older versions.
+func resetBranches(t *testing.T, dir string, branches []string) {
+	t.Helper()
+
+	for _, branch := range branches {
+		_, err := exec.Command("git", "-C", dir, "checkout", branch).Output()
+		if err != nil {
+			t.Fatalf("unable to checkout branch '%s': %v", branch, err)
+		}
+
+		_, err = exec.Command("git", "-C", dir, "reset", "--hard", "HEAD~1").Output()
+		if err != nil {
+			t.Fatalf("unable to reset branch '%s': %v", branch, err)
+		}
+	}
+}
+
+type BranchStatusCase struct {
+	Branch   string
+	UpToDate bool
+}
+
+func testBranchStatus(t *testing.T, dir string, cases []BranchStatusCase) {
+	t.Helper()
+
+	for _, c := range cases {
+		t.Run(fmt.Sprintf("%s", c.Branch), func(t *testing.T) {
+			_, err := exec.Command("git", "-C", dir, "checkout", c.Branch).Output()
+			if err != nil {
+				t.Fatalf("unable to checkout branch '%s': %v", c.Branch, err)
+			}
+
+			out_bytes, err := exec.Command("git", "-C", dir, "status", c.Branch).Output()
+			if err != nil {
+				t.Fatalf("unable to get status of branch '%s': %v", c.Branch, err)
+			}
+			out := string(out_bytes)
+
+			if strings.Contains(out, "Your branch is up to date with") != c.UpToDate {
+				t.Errorf("branch '%s' has the wrong status", c.Branch)
 			}
 		})
 	}

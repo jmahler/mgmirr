@@ -209,3 +209,47 @@ func SetupRpmBranches(repo *git.Repository) error {
 
 	return nil
 }
+
+// Walk all the local branches and perform a git pull.
+func PullAll(repo *git.Repository) error {
+	wt, err := repo.Worktree()
+	if err != nil {
+		return fmt.Errorf("failed to get worktree: %v", err)
+	}
+
+	branches, err := getExpectedLocalBranches(repo)
+	if err != nil {
+		return err
+	}
+
+	for _, branch := range branches {
+
+		// fedora/f31 -> [fedora, f31]
+		branch_parts := strings.Split(branch, "/")
+
+		remote := branch_parts[0]
+		short_branch := strings.Join(branch_parts[1:], "/")
+
+		err = wt.Checkout(&git.CheckoutOptions{
+			Branch: plumbing.NewBranchReferenceName(fmt.Sprintf("%s/%s", remote, short_branch)),
+		})
+		if err != nil {
+			return err
+		}
+
+		err = wt.Pull(&git.PullOptions{
+			RemoteName:    remote,
+			ReferenceName: plumbing.NewBranchReferenceName(short_branch),
+			// These correspond to the branch, remote and merge in .git/config
+		})
+		if err != nil {
+			if err == git.NoErrAlreadyUpToDate {
+				// OK
+			} else {
+				return fmt.Errorf("pull failed: %v", err)
+			}
+		}
+	}
+
+	return nil
+}
