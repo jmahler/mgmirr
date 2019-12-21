@@ -128,11 +128,8 @@ func setupRpmBranch(repo *git.Repository, branch string) error {
 
 	// fedora/f31 -> fedora, f31
 	branch_parts := strings.Split(branch, "/")
-	if len(branch_parts) > 2 {
-		return fmt.Errorf("branch '%s' with > 2 parts isn't supported", branch)
-	}
-	remote := branch_parts[0]       // fedora
-	short_branch := branch_parts[1] // f31
+	remote := branch_parts[0]
+	short_branch := strings.Join(branch_parts[1:], "/")
 
 	wt, err := repo.Worktree()
 	if err != nil {
