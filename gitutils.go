@@ -191,3 +191,81 @@ func SetupRpmBranches(repo *git.Repository) error {
 
 	return nil
 }
+
+// Walk all the local branches and perform a git pull.
+func PullAll(repo *git.Repository) error {
+
+	err := FetchAll(repo)
+	if err != nil {
+		return fmt.Errorf("Unable to fetch for pull: %v", err)
+	}
+
+	branches, err := getExpectedLocalBranches(repo)
+	if err != nil {
+		return err
+	}
+
+	for _, branch := range branches {
+
+		err = repo.SetHead("refs/heads/" + branch)
+		if err != nil {
+			return fmt.Errorf("unable to set head to '%s': %v", branch, err)
+		}
+
+		err = repo.CheckoutHead(&git.CheckoutOpts{
+			Strategy: git.CheckoutForce,
+		})
+		if err != nil {
+			return fmt.Errorf("unable to checkout head: %v", err)
+		}
+
+		local_branch, err := repo.LookupBranch(branch, git.BranchLocal)
+		if err != nil {
+			return fmt.Errorf("unable to lookup branch '%s': %v", branch, err)
+		}
+		defer local_branch.Free()
+
+		remote_branch, err := repo.LookupBranch(branch, git.BranchRemote)
+		if err != nil {
+			return fmt.Errorf("unable to lookup remote branch '%s': %v", branch, err)
+		}
+		defer remote_branch.Free()
+
+		commit, err := repo.AnnotatedCommitFromRef(remote_branch.Reference)
+		if err != nil {
+			return fmt.Errorf("unable to lookup commit for branch '%v': %v", branch, err)
+		}
+		defer commit.Free()
+
+		commits := make([]*git.AnnotatedCommit, 1)
+		commits[0] = commit
+
+		analysis, _, err := repo.MergeAnalysis(commits)
+		if err != nil {
+			return fmt.Errorf("unable to run merge analysis: %v", err)
+		}
+
+		if (analysis & git.MergeAnalysisUpToDate) != 0 {
+			// OK
+		} else if (analysis & git.MergeAnalysisFastForward) != 0 {
+			local_branch_ref := local_branch.Reference
+			_, err := local_branch_ref.SetTarget(remote_branch.Reference.Target(), "pull: Fast-forward")
+			if err != nil {
+				return fmt.Errorf("Fast-forward merge of '%s' failed: %v", branch, err)
+			}
+
+			err = repo.CheckoutHead(&git.CheckoutOpts{
+				Strategy: git.CheckoutForce,
+			})
+			if err != nil {
+				return fmt.Errorf("unable to checkout head: %v", err)
+			}
+		} else if (analysis & git.MergeAnalysisNormal) != 0 {
+			return fmt.Errorf("A merge is required for '%s'", branch)
+		} else {
+			return fmt.Errorf("Unhandled MergeAnalysis? '%v'", analysis)
+		}
+	}
+
+	return nil
+}
