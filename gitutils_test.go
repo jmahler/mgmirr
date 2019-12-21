@@ -42,6 +42,10 @@ func TestRpmMirror(t *testing.T) {
 			Name: "centos",
 			URL:  filepath.Join(abs_testdata, fmt.Sprintf("%s.centos", rpm)),
 		},
+		mgmirr.RemoteConfig{
+			Name: "other",
+			URL:  filepath.Join(abs_testdata, fmt.Sprintf("%s.other", rpm)),
+		},
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
@@ -77,6 +81,7 @@ func TestRpmMirror(t *testing.T) {
 			{"remotes/fedora/f3", false},
 			{"remotes/centos/c6", true},
 			{"remotes/centos/c7", true},
+			{"remotes/other/my/branch/with/lots/of/parts", true},
 		}
 		testBranches(t, dir, cases)
 	})
@@ -95,6 +100,7 @@ func TestRpmMirror(t *testing.T) {
 			{"fedora/f3", false},
 			{"centos/c6", true},
 			{"centos/c7", true},
+			{"other/my/branch/with/lots/of/parts", true},
 		}
 		testBranches(t, dir, cases)
 
@@ -110,6 +116,7 @@ func TestRpmMirror(t *testing.T) {
 			{"fedora/f31", true},
 			{"centos/c6", true},
 			{"centos/c7", true},
+			{"other/my/branch/with/lots/of/parts", true},
 		}
 		testBranchStatus(t, dir, cases)
 
@@ -117,6 +124,7 @@ func TestRpmMirror(t *testing.T) {
 			"fedora/f29",
 			"fedora/f31",
 			"centos/c7",
+			"other/my/branch/with/lots/of/parts",
 		}
 		resetBranches(t, dir, branches)
 
@@ -127,6 +135,7 @@ func TestRpmMirror(t *testing.T) {
 			{"fedora/f31", false},
 			{"centos/c6", true},
 			{"centos/c7", false},
+			{"other/my/branch/with/lots/of/parts", false},
 		}
 		testBranchStatus(t, dir, cases)
 
@@ -142,6 +151,7 @@ func TestRpmMirror(t *testing.T) {
 			{"fedora/f31", true},
 			{"centos/c6", true},
 			{"centos/c7", true},
+			{"other/my/branch/with/lots/of/parts", true},
 		}
 		testBranchStatus(t, dir, cases)
 	})
