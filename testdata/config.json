@@ -1,20 +1,20 @@
 {
   "Origin": {
     "Name": "origin",
-    "URL": "testdata/patch.origin"
+    "URL": "testdata/{{.RPM}}.origin"
   },
   "Remotes": [
     {
       "Name": "fedora",
-      "URL": "testdata/patch.fedora"
+      "URL": "testdata/{{.RPM}}.fedora"
     },
     {
       "Name": "centos",
-      "URL": "testdata/patch.centos"
+      "URL": "testdata/{{.RPM}}.centos"
     },
     {
       "Name": "other",
-      "URL": "testdata/patch.other"
+      "URL": "testdata/{{.RPM}}.other"
     }
   ]
 }

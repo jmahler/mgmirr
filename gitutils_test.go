@@ -26,9 +26,15 @@ func TestRpmMirror(t *testing.T) {
 		t.Fatalf("git init of empty dir '%s' failed: %v", dir, err)
 	}
 
-	cfg, err := mgmirr.LoadConfig("testdata/config.json")
+	cfg_tmpl, err := mgmirr.LoadConfig("testdata/config.json")
 	if err != nil {
 		t.Fatalf("failed to load config: %v", err)
+	}
+
+	rpm := "patch"
+	cfg, err := mgmirr.ExecConfigTemplate(cfg_tmpl, rpm)
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
