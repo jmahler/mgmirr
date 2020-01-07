@@ -1,0 +1,29 @@
+{
+  "Origin": {
+    "Name": "origin",
+    "URLs": [
+      "testdata/patch.origin"
+    ]
+  },
+  "Remotes": [
+    {
+      "Name": "fedora",
+      "URLs": [
+        "testdata/patch.fedora"
+      ]
+    },
+    {
+      "Name": "centos",
+      "URLs": [
+        "testdata/patch.centos"
+      ]
+    },
+    {
+      "Name": "other",
+      "URLs": [
+        "testdata/patch.other"
+      ]
+    }
+
+  ]
+}

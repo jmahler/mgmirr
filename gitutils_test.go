@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"github.com/jmahler/mgmirr"
 	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/config"
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -28,29 +26,13 @@ func TestRpmMirror(t *testing.T) {
 		t.Fatalf("git init of empty dir '%s' failed: %v", dir, err)
 	}
 
-	abs_testdata, err := filepath.Abs("testdata")
+	cfg, err := mgmirr.LoadConfig("testdata/config.json")
 	if err != nil {
-		t.Fatalf("source directory template path setup failed: %v", err)
-	}
-
-	rpm := "patch"
-	cfg := []config.RemoteConfig{
-		config.RemoteConfig{
-			Name: "fedora",
-			URLs: []string{filepath.Join(abs_testdata, fmt.Sprintf("%s.fedora", rpm))},
-		},
-		config.RemoteConfig{
-			Name: "centos",
-			URLs: []string{filepath.Join(abs_testdata, fmt.Sprintf("%s.centos", rpm))},
-		},
-		config.RemoteConfig{
-			Name: "other",
-			URLs: []string{filepath.Join(abs_testdata, fmt.Sprintf("%s.other", rpm))},
-		},
+		t.Fatalf("failed to load config: %v", err)
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
-		err = mgmirr.SetupRpmRemotes(repo, cfg)
+		err = mgmirr.SetupRpmRemotes(repo, cfg.Remotes)
 		if err != nil {
 			t.Fatalf("setup remotes failed: %v", err)
 		}
@@ -61,7 +43,7 @@ func TestRpmMirror(t *testing.T) {
 		}
 		out := string(out_bytes)
 
-		for _, c := range cfg {
+		for _, c := range cfg.Remotes {
 			remote := c.Name
 			if !strings.Contains(out, remote) {
 				t.Errorf("remote '%s' not found", remote)
@@ -70,7 +52,7 @@ func TestRpmMirror(t *testing.T) {
 	})
 
 	t.Run("FetchAll", func(t *testing.T) {
-		err = mgmirr.FetchAll(repo, cfg)
+		err = mgmirr.FetchAll(repo, cfg.Remotes)
 		if err != nil {
 			t.Fatalf("FetchAll failed: %v", err)
 		}
