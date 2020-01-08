@@ -1,0 +1,16 @@
+{
+  "Origin": {
+    "Name": "origin",
+    "URL": "ssh://git-jmmahler/v1/{{.RPM}}.rpm"
+  },
+  "Remotes": [
+    {
+      "Name": "fedora",
+      "URL": "https://src.fedoraproject.org/rpms/{{.RPM}}.git"
+    },
+    {
+      "Name": "centos",
+      "URL": "https://git.centos.org/rpms/{{.RPM}}.git"
+    }
+  ]
+}
