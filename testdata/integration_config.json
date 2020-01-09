@@ -1,7 +1,7 @@
 {
   "Origin": {
     "Name": "origin",
-    "URL": "ssh://git-jmmahler/v1/{{.RPM}}.rpm"
+    "URL": "testdata/{{.RPM}}.origin"
   },
   "Remotes": [
     {

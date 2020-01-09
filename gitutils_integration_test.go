@@ -27,11 +27,6 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	//fmt.Println(dir)
 	// Need to debug tests?  Comment out Remove and Print the Git repo dir.
 
-	repo, err := git.InitRepository(dir, false)
-	if err != nil {
-		t.Fatalf("git init of empty dir '%s' failed: %v", dir, err)
-	}
-
 	cfg_tmpl, err := mgmirr.LoadConfig("testdata/integration_config.json")
 	if err != nil {
 		t.Fatalf("failed to load config: %v", err)
@@ -41,6 +36,11 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	cfg, err := mgmirr.ExecConfigTemplate(cfg_tmpl, rpm)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	repo, err := git.Clone(cfg.Origin.URL, dir, &git.CloneOptions{Bare: false})
+	if err != nil {
+		t.Fatalf("git clone of '%s' to '%s' failed: %v", cfg.Origin.URL, dir, err)
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
