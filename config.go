@@ -23,7 +23,23 @@ func ExecConfigTemplate(cfg Config, rpm string) (Config, error) {
 
 	var new_cfg Config
 
-	new_cfg.Origin = cfg.Origin
+	new_cfg.Origin = config.RemoteConfig{
+		Name: cfg.Origin.Name,
+		URLs: make([]string, len(cfg.Origin.URLs)),
+	}
+
+	for i, URL := range cfg.Origin.URLs {
+		tmpl, err := template.New("URLs").Parse(URL)
+
+		vars := struct{ RPM string }{rpm}
+		out := new(bytes.Buffer)
+		err = tmpl.Execute(out, vars)
+		if err != nil {
+			return new_cfg, fmt.Errorf("unable to exec template '%s' for '%s': %v", URL, rpm, err)
+		}
+
+		new_cfg.Origin.URLs[i] = string(out.String())
+	}
 
 	new_cfg.Remotes = make([]config.RemoteConfig, len(cfg.Remotes))
 	for i, remote := range cfg.Remotes {
