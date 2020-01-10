@@ -37,6 +37,16 @@ func TestRpmMirror(t *testing.T) {
 		t.Fatalf("git clone of '%s' to '%s' failed: %v", cfg.Origin.URL, dir, err)
 	}
 
+	// trying to clone a second time should fail because it already exists
+	_, err = git.Clone(cfg.Origin.URL, dir, &git.CloneOptions{Bare: false})
+	if err == nil {
+		t.Fatalf("git (2nd) clone of '%s' to '%s' should've failed", cfg.Origin.URL, dir)
+	} else {
+		if !strings.Contains(err.Error(), "exists and is not an empty directory") {
+			t.Fatalf("git (2nd) clone of '%s' to '%s' failed: %v", cfg.Origin.URL, dir, err)
+		}
+	}
+
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
 		err = mgmirr.SetupRpmRemotes(repo, cfg.Remotes)
 		if err != nil {
