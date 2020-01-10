@@ -39,6 +39,16 @@ func TestRpmMirror(t *testing.T) {
 		t.Fatalf("git clone of '%s' to '%s' failed: %v", cfg.Origin.URLs[0], dir, err)
 	}
 
+	// trying to clone a second time should encounter AlreadyExists
+	_, err = git.PlainClone(dir, false, &git.CloneOptions{
+		URL: cfg.Origin.URLs[0],
+	})
+	if err != nil {
+		if err != git.ErrRepositoryAlreadyExists {
+			t.Fatalf("git (2nd) clone of '%s' to '%s' failed: %v", cfg.Origin.URLs[0], dir, err)
+		}
+	}
+
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
 		err = mgmirr.SetupRpmRemotes(repo, cfg.Remotes)
 		if err != nil {
