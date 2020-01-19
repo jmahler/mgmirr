@@ -46,5 +46,5 @@ Jeremiah Mahler <jmmahler@gmail.com>
 
 # LICENSE
 
-Copyright &copy; 2019, Jeremiah Mahler.<br>
+Copyright &copy; 2020, Jeremiah Mahler.<br>
 Released under the MIT License.
