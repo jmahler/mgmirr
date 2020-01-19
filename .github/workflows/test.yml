@@ -1,0 +1,46 @@
+name: Tests
+on: [push, pull_request]
+
+jobs:
+  main:
+    name: Main
+    runs-on: ubuntu-18.04
+    env:
+      GOPATH: "${{ github.workspace }}/go:/usr/share/gocode"
+      LD_LIBRARY_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/install/lib/"
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.10
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        path: go/src/github.com/jmahler/mgmirr
+    - name: Checkout git2go
+      run: |
+        go get -d github.com/libgit2/git2go
+    - name: Install Packages
+      run: |
+        sudo apt install cmake libgit2-26 libgit2-dev libssh2-1-dev
+    - name: Setup git2go (dynamic)
+      working-directory: "${{ github.workspace }}/go/src/github.com/libgit2/git2go"
+      run: |
+        git checkout master
+        git submodule update --init
+        make install-dynamic
+        make test-dynamic
+    - name: Build
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
+      run: |
+        go build -v
+    - name: Run go fmt
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
+      run: |
+        DIFF="$(gofmt -d -s .)"
+        test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
+    - name: Test
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
+      run: |
+        go test -v

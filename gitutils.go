@@ -2,7 +2,7 @@ package mgmirr
 
 import (
 	"fmt"
-	"gopkg.in/libgit2/git2go.v27"
+	"github.com/libgit2/git2go"
 	"log"
 	"strings"
 )

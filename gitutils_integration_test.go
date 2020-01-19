@@ -10,7 +10,7 @@ package mgmirr_test
 
 import (
 	"github.com/jmahler/mgmirr"
-	"gopkg.in/libgit2/git2go.v27"
+	"github.com/libgit2/git2go"
 	"io/ioutil"
 	"os"
 	"os/exec"
