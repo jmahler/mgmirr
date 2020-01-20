@@ -2,8 +2,8 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: Build
+  main:
+    name: Main
     runs-on: ubuntu-latest
     steps:
     - name: Setup Go
@@ -21,3 +21,5 @@ jobs:
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
+    - name: Test
+      run: go test
