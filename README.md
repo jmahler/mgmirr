@@ -2,7 +2,7 @@
 
 mgmirr - A tool for mirroring multiple RPM Git repos in to one.
 
-![Test Status](https://github.com/jmahler/mgmirr/workflows/Tests/badge.svg)
+[![Test Status](https://github.com/jmahler/mgmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/mgmirr/actions?query=workflow%3ATests)
 
 # DESCRIPTION
 
