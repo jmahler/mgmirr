@@ -5,21 +5,32 @@ jobs:
   main:
     name: Main
     runs-on: ubuntu-latest
+    env:
+      GOPATH: ${{ github.workspace }}/go
     steps:
     - name: Setup Go
       uses: actions/setup-go@v1
       with:
         go-version: 1.13
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        path: go/src/github.com/jmahler/mgmirr
     - name: Get dependencies
       run: |
-        go get -v -t -d ./...
+        go get github.com/jmahler/mgmirr
     - name: Build
-      run: go build -v .
+      run: go build github.com/jmahler/mgmirr
     - name: Run go fmt
+      working-directory: ${{ github.workspace }}/go/src/github.com/jmahler/mgmirr/
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
-    - name: Test
-      run: go test
+    - name: Run Tests + Generate Coverage
+      run: go test -v github.com/jmahler/mgmirr -coverprofile=profile.cov
+    - name: Send Coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: profile.cov
+        github-token: ${{ secrets.GITHUB_TOKEN }}
