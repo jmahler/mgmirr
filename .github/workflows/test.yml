@@ -41,6 +41,10 @@ jobs:
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
     - name: Test
-      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
       run: |
-        go test -v
+        go test -v github.com/jmahler/mgmirr -coverprofile=profile.cov
+    - name: Send Coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: profile.cov
+        github-token: ${{ secrets.GITHUB_TOKEN }}
