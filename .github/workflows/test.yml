@@ -8,6 +8,7 @@ jobs:
     env:
       GOPATH: "${{ github.workspace }}/go:/usr/share/gocode"
       LD_LIBRARY_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/install/lib/"
+      PKG_CONFIG_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/build/"
     steps:
     - name: Setup Go
       uses: actions/setup-go@v1
@@ -23,14 +24,14 @@ jobs:
         go get -d github.com/libgit2/git2go
     - name: Install Packages
       run: |
-        sudo apt install cmake libgit2-26 libgit2-dev libssh2-1-dev
+        sudo apt install cmake libssh2-1-dev
     - name: Setup git2go (dynamic)
       working-directory: "${{ github.workspace }}/go/src/github.com/libgit2/git2go"
       run: |
         git checkout master
         git submodule update --init
-        make install-dynamic
         make test-dynamic
+        make install-dynamic
     - name: Build
       working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
       run: |
