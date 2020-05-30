@@ -2,6 +2,7 @@
 
 mgmirr - A tool for mirroring multiple RPM Git repos in to one.
 
+[![GoDoc](https://godoc.org/github.com/jmahler/mgmirr?status.svg)](http://godoc.org/github.com/jmahler/mgmirr)
 [![Test Status](https://github.com/jmahler/mgmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/mgmirr/actions?query=workflow%3ATests)
 [![Coverage Status](https://coveralls.io/repos/github/jmahler/mgmirr/badge.svg?branch=master)](https://coveralls.io/github/jmahler/mgmirr?branch=master)
 
