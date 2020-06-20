@@ -1,4 +1,4 @@
-package mgmirr
+package rpmmirr
 
 import (
 	"fmt"

@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 1
-        path: go/src/github.com/jmahler/mgmirr
+        path: go/src/github.com/jmahler/rpmmirr
     - name: Checkout git2go
       run: |
         go get -d github.com/libgit2/git2go
@@ -33,17 +33,17 @@ jobs:
         make test-dynamic
         make install-dynamic
     - name: Build
-      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
         go build -v
     - name: Run go fmt
-      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/mgmirr"
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
     - name: Test
       run: |
-        go test -v github.com/jmahler/mgmirr -coverprofile=profile.cov
+        go test -v github.com/jmahler/rpmmirr -coverprofile=profile.cov
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
       with:

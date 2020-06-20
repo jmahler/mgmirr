@@ -1,10 +1,10 @@
 # NAME
 
-mgmirr - A tool for mirroring multiple RPM Git repos in to one.
+rpmmirr - A tool for mirroring multiple RPM Git repos in to one.
 
-[![GoDoc](https://godoc.org/github.com/jmahler/mgmirr?status.svg)](http://godoc.org/github.com/jmahler/mgmirr)
-[![Test Status](https://github.com/jmahler/mgmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/mgmirr/actions?query=workflow%3ATests)
-[![Coverage Status](https://coveralls.io/repos/github/jmahler/mgmirr/badge.svg?branch=master)](https://coveralls.io/github/jmahler/mgmirr?branch=master)
+[![GoDoc](https://godoc.org/github.com/jmahler/rpmmirr?status.svg)](http://godoc.org/github.com/jmahler/rpmmirr)
+[![Test Status](https://github.com/jmahler/rpmmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/rpmmirr/actions?query=workflow%3ATests)
+[![Coverage Status](https://coveralls.io/repos/github/jmahler/rpmmirr/badge.svg?branch=master)](https://coveralls.io/github/jmahler/rpmmirr?branch=master)
 
 # DESCRIPTION
 
@@ -34,7 +34,7 @@ one repo.
             }
         ]
     [...]
-    $ mgmirr -C patch.rpm -c config.json -r patch
+    $ rpmmirr -C patch.rpm -c config.json -r patch
     $ cd patch.rpm/
     $ git branch
     [...]
