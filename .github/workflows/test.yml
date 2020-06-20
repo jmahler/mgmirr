@@ -35,17 +35,18 @@ jobs:
     - name: Build
       working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
-        go build -v
+        go build ./...
     - name: Run go fmt
       working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
     - name: Test
+      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
-        go test -v github.com/jmahler/rpmmirr -coverprofile=profile.cov
+        go test -coverprofile=profile.cov ./...
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
       with:
+        working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
         path-to-profile: profile.cov
-        github-token: ${{ secrets.GITHUB_TOKEN }}
