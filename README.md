@@ -46,7 +46,7 @@ one repo.
 
 # AUTHOR
 
-Jeremiah Mahler <jmmahler@gmail.com>
+Jeremiah Mahler &lt;jmmahler@gmail.com&gt;
 
 # LICENSE
 
