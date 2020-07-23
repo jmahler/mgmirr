@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       GOPATH: "${{ github.workspace }}/go:/usr/share/gocode"
+      GOBIN: "${{ github.workspace }}/go/bin"
       LD_LIBRARY_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/install/lib/"
       PKG_CONFIG_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/build/"
     steps:
@@ -19,9 +20,10 @@ jobs:
       with:
         fetch-depth: 1
         path: go/src/github.com/jmahler/rpmmirr
-    - name: Checkout git2go
+    - name: Checkout Go Packages
       run: |
         go get -d github.com/libgit2/git2go
+        go get -d github.com/pborman/getopt/v2
     - name: Install Packages
       run: |
         sudo apt install cmake libssh2-1-dev
@@ -33,20 +35,23 @@ jobs:
         make test-dynamic
         make install-dynamic
     - name: Build
-      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
-        go build ./...
+        go build github.com/jmahler/rpmmirr github.com/jmahler/rpmmirr/rpmmirr
     - name: Run go fmt
       working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
-    - name: Test
-      working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
+    - name: Install CLI
       run: |
-        go test -coverprofile=profile.cov ./...
+        go install github.com/jmahler/rpmmirr/rpmmirr
+        echo "::add-path::${GOBIN}"
+    - name: Test
+      run: |
+        go test -coverprofile=profile.cov github.com/jmahler/rpmmirr
+        # test the cli but leave out coverage since it isn't useful
+        go test github.com/jmahler/rpmmirr/rpmmirr
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
       with:
-        working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rpmmirr"
         path-to-profile: profile.cov
