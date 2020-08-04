@@ -51,6 +51,10 @@ jobs:
         go test -coverprofile=profile.cov github.com/jmahler/rpmmirr
         # test the cli but leave out coverage since it isn't useful
         go test github.com/jmahler/rpmmirr/rpmmirr
+    - name: Integration Tests
+      run: |
+        go test -tags=integration github.com/jmahler/rpmmirr
+        go test -tags=integration github.com/jmahler/rpmmirr/rpmmirr
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
       with:
