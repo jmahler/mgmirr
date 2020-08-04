@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestRpmMirror(t *testing.T) {
+func TestRpmMirrorParts(t *testing.T) {
 
 	dir, err := ioutil.TempDir("", "rpmmirr")
 	if err != nil {
@@ -266,5 +266,23 @@ func testBranchStatus(t *testing.T, dir string, cases []BranchStatusCase) {
 				t.Errorf("branch '%s' has the wrong status", c.Branch)
 			}
 		})
+	}
+}
+
+func TestRpmMirror(t *testing.T) {
+	path, err := ioutil.TempDir("", "rpmmirr")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(path)
+	//fmt.Println(dir)
+	// Need to debug tests?  Comment out Remove and Print the Git repo dir.
+
+	config := "testdata/config.json"
+	rpm := "patch"
+	err = rpmmirr.RpmMirror(config, rpm, path)
+
+	if err != nil {
+		t.Fatal(err)
 	}
 }

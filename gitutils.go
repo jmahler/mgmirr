@@ -269,3 +269,45 @@ func PullAll(repo *git.Repository) error {
 
 	return nil
 }
+
+// Does all the steps to mirror an RPM: clone, setup branches,
+// fetch, pull, etc.  Will get the existing repo, in whatever
+// state it may be in, in to an updated state.
+func RpmMirror(config string, rpm string, path string) error {
+	cfg_tmpl, err := LoadConfig(config)
+	if err != nil {
+		return err
+	}
+
+	cfg, err := ExecConfigTemplate(cfg_tmpl, rpm)
+	if err != nil {
+		return err
+	}
+
+	repo, err := git.Clone(cfg.Origin.URL, path, &git.CloneOptions{Bare: false})
+	if err != nil {
+		return err
+	}
+
+	err = SetupRpmRemotes(repo, cfg.Remotes)
+	if err != nil {
+		return err
+	}
+
+	err = FetchAll(repo)
+	if err != nil {
+		return err
+	}
+
+	err = SetupRpmBranches(repo)
+	if err != nil {
+		return err
+	}
+
+	err = PullAll(repo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
