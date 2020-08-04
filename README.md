@@ -2,7 +2,7 @@
 
 rpmmirr - A tool for mirroring multiple RPM Git repos in to one.
 
-[![GoDoc](https://godoc.org/github.com/jmahler/rpmmirr?status.svg)](http://godoc.org/github.com/jmahler/rpmmirr)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/jmahler/rpmmirr)](https://pkg.go.dev/github.com/jmahler/rpmmirr)
 [![Test Status](https://github.com/jmahler/rpmmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/rpmmirr/actions?query=workflow%3ATests)
 [![Coverage Status](https://coveralls.io/repos/github/jmahler/rpmmirr/badge.svg?branch=master)](https://coveralls.io/github/jmahler/rpmmirr?branch=master)
 
