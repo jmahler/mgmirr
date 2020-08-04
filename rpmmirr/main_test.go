@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestMain(t *testing.T) {
+func TestHelp(t *testing.T) {
 	out_bytes, err := exec.Command("rpmmirr", "-h").Output()
 	if err != nil {
 		t.Fatalf("unable to get help usage: %v", err)

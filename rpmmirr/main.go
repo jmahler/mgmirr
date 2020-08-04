@@ -27,9 +27,9 @@ func main() {
 		os.Exit(0)
 	}
 
-	_, err := rpmmirr.LoadConfig(config)
+	err := rpmmirr.RpmMirror(config, rpm, path)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(2)
+		os.Exit(1)
 	}
 }
