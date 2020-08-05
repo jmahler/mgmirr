@@ -12,7 +12,7 @@ A common situation with Git repos for RPM packages is that there
 are multiple repos for different distros with similar contents.
 CentOS is similar to Redhat is similar to Fedora, etc.
 
-  https://src.fedoraproject.org/rpms/patch
+  https://src.fedoraproject.org/rpms/patch<br>
   https://git.centos.org/rpms/patch
 
 Because they are in different repos it is difficult to perform
