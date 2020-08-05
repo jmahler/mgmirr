@@ -25,11 +25,11 @@ one repo.
     [...]
         "Remotes": [
             {
-                        "Name": "fedora",
+                "Name": "fedora",
                 "URLs": ["https://src.fedoraproject.org/rpms/{{.RPM}}.git"]
             },
             {
-                        "Name": "centos",
+                "Name": "centos",
                 "URLs": ["https://git.centos.org/rpms/{{.RPM}}.git"]
             }
         ]
