@@ -1,4 +1,4 @@
-package rpmmirr
+package rgm
 
 import (
 	"fmt"

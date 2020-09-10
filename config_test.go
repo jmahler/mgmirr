@@ -1,13 +1,13 @@
-package rpmmirr_test
+package rgm_test
 
 import (
-	"github.com/jmahler/rpmmirr"
+	"github.com/jmahler/rgm"
 	"strings"
 	"testing"
 )
 
 func TestConfig(t *testing.T) {
-	cfg_tmpl, err := rpmmirr.LoadConfig("testdata/config.json")
+	cfg_tmpl, err := rgm.LoadConfig("testdata/config.json")
 	if err != nil {
 		t.Errorf("Failed to load config.json: %v", err)
 	}
@@ -15,7 +15,7 @@ func TestConfig(t *testing.T) {
 	// Fill out some data and make sure the template
 	// doesn't get corrupted.
 	bad_rpm := "badrpmXXX"
-	cfg, err := rpmmirr.ExecConfigTemplate(cfg_tmpl, bad_rpm)
+	cfg, err := rgm.ExecConfigTemplate(cfg_tmpl, bad_rpm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,7 +25,7 @@ func TestConfig(t *testing.T) {
 	}
 
 	rpm := "patch"
-	cfg, err = rpmmirr.ExecConfigTemplate(cfg_tmpl, rpm)
+	cfg, err = rgm.ExecConfigTemplate(cfg_tmpl, rpm)
 	if err != nil {
 		t.Fatal(err)
 	}

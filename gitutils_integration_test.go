@@ -6,10 +6,10 @@
 //
 // **NOTE** These tests are very slow so don't waste your
 // time running them until after the local tests have passed.
-package rpmmirr_test
+package rgm_test
 
 import (
-	"github.com/jmahler/rpmmirr"
+	"github.com/jmahler/rgm"
 	"github.com/libgit2/git2go"
 	"io/ioutil"
 	"os"
@@ -19,7 +19,7 @@ import (
 )
 
 func TestRpmMirrorIntegration(t *testing.T) {
-	dir, err := ioutil.TempDir("", "rpmmirr-integration")
+	dir, err := ioutil.TempDir("", "rgm-integration")
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
@@ -27,13 +27,13 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	//fmt.Println(dir)
 	// Need to debug tests?  Comment out Remove and Print the Git repo dir.
 
-	cfg_tmpl, err := rpmmirr.LoadConfig("testdata/integration_config.json")
+	cfg_tmpl, err := rgm.LoadConfig("testdata/integration_config.json")
 	if err != nil {
 		t.Fatalf("failed to load config: %v", err)
 	}
 
 	rpm := "patch"
-	cfg, err := rpmmirr.ExecConfigTemplate(cfg_tmpl, rpm)
+	cfg, err := rgm.ExecConfigTemplate(cfg_tmpl, rpm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +44,7 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
-		err = rpmmirr.SetupRpmRemotes(repo, cfg.Remotes)
+		err = rgm.SetupRpmRemotes(repo, cfg.Remotes)
 		if err != nil {
 			t.Fatalf("setup remotes failed: %v", err)
 		}
@@ -64,7 +64,7 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	})
 
 	t.Run("FetchAll", func(t *testing.T) {
-		err = rpmmirr.FetchAll(repo)
+		err = rgm.FetchAll(repo)
 		if err != nil {
 			t.Fatalf("FetchAll failed: %v", err)
 		}
@@ -81,7 +81,7 @@ func TestRpmMirrorIntegration(t *testing.T) {
 	})
 
 	t.Run("SetupRpmBranches", func(t *testing.T) {
-		err = rpmmirr.SetupRpmBranches(repo)
+		err = rgm.SetupRpmBranches(repo)
 		if err != nil {
 			t.Fatalf("SetupRpmBranches failed: %v", err)
 		}
@@ -129,7 +129,7 @@ func TestRpmMirrorIntegration(t *testing.T) {
 		}
 		testBranchStatus(t, dir, cases)
 
-		err = rpmmirr.PullAll(repo)
+		err = rgm.PullAll(repo)
 		if err != nil {
 			t.Error(err)
 		}

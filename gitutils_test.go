@@ -1,8 +1,8 @@
-package rpmmirr_test
+package rgm_test
 
 import (
 	"fmt"
-	"github.com/jmahler/rpmmirr"
+	"github.com/jmahler/rgm"
 	"github.com/libgit2/git2go"
 	"io/ioutil"
 	"os"
@@ -13,7 +13,7 @@ import (
 
 func TestRpmMirrorParts(t *testing.T) {
 
-	dir, err := ioutil.TempDir("", "rpmmirr")
+	dir, err := ioutil.TempDir("", "rgm")
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
@@ -21,13 +21,13 @@ func TestRpmMirrorParts(t *testing.T) {
 	//fmt.Println(dir)
 	// Need to debug tests?  Comment out Remove and Print the Git repo dir.
 
-	cfg_tmpl, err := rpmmirr.LoadConfig("testdata/config.json")
+	cfg_tmpl, err := rgm.LoadConfig("testdata/config.json")
 	if err != nil {
 		t.Fatalf("failed to load config: %v", err)
 	}
 
 	rpm := "patch"
-	cfg, err := rpmmirr.ExecConfigTemplate(cfg_tmpl, rpm)
+	cfg, err := rgm.ExecConfigTemplate(cfg_tmpl, rpm)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,7 @@ func TestRpmMirrorParts(t *testing.T) {
 	}
 
 	t.Run("SetupRpmRemotes", func(t *testing.T) {
-		err = rpmmirr.SetupRpmRemotes(repo, cfg.Remotes)
+		err = rgm.SetupRpmRemotes(repo, cfg.Remotes)
 		if err != nil {
 			t.Fatalf("setup remotes failed: %v", err)
 		}
@@ -68,7 +68,7 @@ func TestRpmMirrorParts(t *testing.T) {
 	})
 
 	t.Run("FetchAll", func(t *testing.T) {
-		err = rpmmirr.FetchAll(repo)
+		err = rgm.FetchAll(repo)
 		if err != nil {
 			t.Fatalf("FetchAll failed: %v", err)
 		}
@@ -86,7 +86,7 @@ func TestRpmMirrorParts(t *testing.T) {
 	})
 
 	t.Run("SetupRpmBranches", func(t *testing.T) {
-		err = rpmmirr.SetupRpmBranches(repo)
+		err = rgm.SetupRpmBranches(repo)
 		if err != nil {
 			t.Fatalf("SetupRpmBranches failed: %v", err)
 		}
@@ -138,7 +138,7 @@ func TestRpmMirrorParts(t *testing.T) {
 		}
 		testBranchStatus(t, dir, cases)
 
-		err = rpmmirr.PullAll(repo)
+		err = rgm.PullAll(repo)
 		if err != nil {
 			t.Error(err)
 		}
@@ -270,7 +270,7 @@ func testBranchStatus(t *testing.T, dir string, cases []BranchStatusCase) {
 }
 
 func TestRpmMirror(t *testing.T) {
-	path, err := ioutil.TempDir("", "rpmmirr")
+	path, err := ioutil.TempDir("", "rgm")
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
@@ -280,7 +280,7 @@ func TestRpmMirror(t *testing.T) {
 
 	config := "testdata/config.json"
 	rpm := "patch"
-	err = rpmmirr.RpmMirror(config, rpm, path)
+	err = rgm.RpmMirror(config, rpm, path)
 
 	if err != nil {
 		t.Fatal(err)

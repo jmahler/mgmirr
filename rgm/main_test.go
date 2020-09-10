@@ -7,7 +7,7 @@ import (
 )
 
 func TestHelp(t *testing.T) {
-	out_bytes, err := exec.Command("rpmmirr", "-h").Output()
+	out_bytes, err := exec.Command("rgm", "-h").Output()
 	if err != nil {
 		t.Fatalf("unable to get help usage: %v", err)
 	}

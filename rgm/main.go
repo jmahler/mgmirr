@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/jmahler/rpmmirr"
+	"github.com/jmahler/rgm"
 	"github.com/pborman/getopt/v2"
 	"os"
 )
@@ -27,7 +27,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	err := rpmmirr.RpmMirror(config, rpm, path)
+	err := rgm.RpmMirror(config, rpm, path)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

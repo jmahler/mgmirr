@@ -1,10 +1,10 @@
 # NAME
 
-rpmmirr - A tool for mirroring multiple RPM Git repos in to one.
+rgm - A tool for mirroring multiple RPM Git repos in to one.
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/jmahler/rpmmirr)](https://pkg.go.dev/github.com/jmahler/rpmmirr)
-[![Test Status](https://github.com/jmahler/rpmmirr/workflows/Tests/badge.svg)](https://github.com/jmahler/rpmmirr/actions?query=workflow%3ATests)
-[![Coverage Status](https://coveralls.io/repos/github/jmahler/rpmmirr/badge.svg?branch=master)](https://coveralls.io/github/jmahler/rpmmirr?branch=master)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/jmahler/rgm)](https://pkg.go.dev/github.com/jmahler/rgm)
+[![Test Status](https://github.com/jmahler/rgm/workflows/Tests/badge.svg)](https://github.com/jmahler/rgm/actions?query=workflow%3ATests)
+[![Coverage Status](https://coveralls.io/repos/github/jmahler/rgm/badge.svg?branch=master)](https://coveralls.io/github/jmahler/rgm?branch=master)
 
 # DESCRIPTION
 
@@ -34,7 +34,7 @@ one repo.
             }
         ]
     [...]
-    $ rpmmirr -C patch.rpm -c config.json -r patch
+    $ rgm -C patch.rpm -c config.json -r patch
     $ cd patch.rpm/
     $ git branch
     [...]
@@ -71,7 +71,7 @@ $ mkdir $HOME/go
 $ export GOPATH="$HOME/go:/usr/share/gocode"
 $ export GOBIN="$HOME/go/bin"
 
-$ go get -d github.com/jmahler/rpmmirr
+$ go get -d github.com/jmahler/rgm
 
 $ go get -d github.com/libgit2/git2go
 $ go get -d github.com/pborman/getopt/v2
@@ -82,16 +82,16 @@ $ make test-dynamic
 $ make install-dynamic
 </pre>
 
-Build and install rpmmirr.
+Build and install rgm.
 <pre>
-$ go build github.com/jmahler/rpmmirr github.com/jmahler/rpmmirr/rpmmirr
-$ go install github.com/jmahler/rpmmirr/rpmmirr
+$ go build github.com/jmahler/rgm github.com/jmahler/rgm/rgm
+$ go install github.com/jmahler/rgm/rgm
 </pre>
 
 Confirm that it can be run from the command line.
 <pre>
-$ ~/go/bin/rpmmirr -h
-Usage: rpmmirr [-h] [-C value] [-c value] [-r value] [parameters ...]
+$ ~/go/bin/rgm -h
+Usage: rgm [-h] [-C value] [-c value] [-r value] [parameters ...]
  -C value  path to git repo for rpm
  -c value  config file (e.g. config.json)
  -h        help
