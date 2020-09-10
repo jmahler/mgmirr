@@ -44,6 +44,60 @@ one repo.
     fedora/f30
     fedora/f31
 
+# INSTALL HOWTO
+
+This is a summary of the install steps that can also be found
+by looking at the Github workflow (`.github/workflows/test.yml`).
+
+The following steps were verified using a plain Ubuntu 18.04 Docker
+container.  It is different than the Github Workflow because it doesn't
+have all the extras included with workflows.
+
+First, get a host or Docker container with Ubuntu 18.04.
+<pre>
+$ docker pull ubuntu:18.04
+$ docker run -it ubuntu:18.04 /bin/bash
+</pre>
+
+Install the necessary system packages.
+<pre>
+$ apt install git golang cmake libssh2-1-dev libssl-dev zlib1g-dev libpcre3-dev
+$ apt install tzdata
+</pre>
+
+Setup Go and build the packages.
+<pre>
+$ mkdir $HOME/go
+$ export GOPATH="$HOME/go:/usr/share/gocode"
+$ export GOBIN="$HOME/go/bin"
+
+$ go get -d github.com/jmahler/rpmmirr
+
+$ go get -d github.com/libgit2/git2go
+$ go get -d github.com/pborman/getopt/v2
+$ go get -d golang.org/x/crypto/openpg
+
+$ cd $HOME/go/src/github.com/libgit2/git2go/
+$ make test-dynamic
+$ make install-dynamic
+</pre>
+
+Build and install rpmmirr.
+<pre>
+$ go build github.com/jmahler/rpmmirr github.com/jmahler/rpmmirr/rpmmirr
+$ go install github.com/jmahler/rpmmirr/rpmmirr
+</pre>
+
+Confirm that it can be run from the command line.
+<pre>
+$ ~/go/bin/rpmmirr -h
+Usage: rpmmirr [-h] [-C value] [-c value] [-r value] [parameters ...]
+ -C value  path to git repo for rpm
+ -c value  config file (e.g. config.json)
+ -h        help
+ -r value  rpm name (e.g. patch)
+</pre>
+
 # AUTHOR
 
 Jeremiah Mahler &lt;jmmahler@gmail.com&gt;
