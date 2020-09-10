@@ -28,9 +28,10 @@ jobs:
       run: |
         go get -d github.com/libgit2/git2go
         go get -d github.com/pborman/getopt/v2
+        go get -d golang.org/x/crypto/openpgp
     - name: Install Packages
       run: |
-        sudo apt install cmake libssh2-1-dev
+        sudo apt install cmake libssh2-1-dev libssl-dev zlib1g-dev libpcre3-dev
     - name: Setup git2go (dynamic)
       working-directory: "${{ github.workspace }}/go/src/github.com/libgit2/git2go"
       run: |
