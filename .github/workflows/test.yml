@@ -57,6 +57,8 @@ jobs:
     - name: Integration Tests
       run: |
         go test -tags=integration github.com/jmahler/rgm
+    - name: CLI Integration Tests
+      run: |
         go test -tags=integration github.com/jmahler/rgm/rgm
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
