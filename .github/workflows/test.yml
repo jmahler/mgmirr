@@ -16,9 +16,7 @@ jobs:
       PKG_CONFIG_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/build/"
     steps:
     - name: Setup Go
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.10
+      uses: actions/setup-go@v2
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
       with:
