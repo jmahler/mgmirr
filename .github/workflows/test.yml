@@ -50,7 +50,7 @@ jobs:
     - name: Install CLI
       run: |
         go install github.com/jmahler/rgm/rgm
-        echo "::add-path::${GOBIN}"
+        echo "${GOBIN}" >> $GITHUB_PATH
     - name: Test
       run: |
         go test -coverprofile=profile.cov github.com/jmahler/rgm
