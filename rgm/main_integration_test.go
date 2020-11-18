@@ -17,7 +17,7 @@ func TestRpmMirror(t *testing.T) {
 	}
 	defer os.RemoveAll(path)
 
-	out_bytes, err := exec.Command("rgm", "-C", path, "-c", "testdata/integration_config.json", "-r", "patch").Output()
+	out_bytes, err := exec.Command("rgm", "-C", path, "-c", "../testdata/integration_config.json", "-r", "patch").Output()
 	if err != nil {
 		out := string(out_bytes)
 		fmt.Println(out)

@@ -1,7 +1,7 @@
 {
   "Origin": {
     "Name": "origin",
-    "URL": "testdata/{{.RPM}}.origin"
+    "URL": "https://src.fedoraproject.org/rpms/{{.RPM}}.git"
   },
   "Remotes": [
     {
