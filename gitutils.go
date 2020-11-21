@@ -110,22 +110,22 @@ func setupRpmBranch(repo *git.Repository, branch string) error {
 
 	var err error
 
-	// first, create a new local branch from the remote
-
-	remote_branch, err := repo.LookupBranch(branch, git.BranchRemote)
-	if err != nil {
-		return fmt.Errorf("unable to find remote '%s': %v", branch, err)
-	}
-	defer remote_branch.Free()
-
-	commit, err := repo.LookupCommit(remote_branch.Target())
-	if err != nil {
-		return fmt.Errorf("lookup commit failed: %v", err)
-	}
-	defer commit.Free()
+	// first, lookup the remote branch and create a local one if needed
 
 	local_branch, err := repo.LookupBranch(branch, git.BranchLocal)
 	if local_branch == nil || err != nil {
+		remote_branch, err := repo.LookupBranch(branch, git.BranchRemote)
+		if err != nil {
+			return fmt.Errorf("unable to find remote '%s': %v", branch, err)
+		}
+		defer remote_branch.Free()
+
+		commit, err := repo.LookupCommit(remote_branch.Target())
+		if err != nil {
+			return fmt.Errorf("lookup commit failed: %v", err)
+		}
+		defer commit.Free()
+
 		local_branch, err = repo.CreateBranch(branch, commit, false)
 		if err != nil {
 			return fmt.Errorf("create branch '%s' failed: %v", branch, err)
