@@ -12,8 +12,8 @@ jobs:
     env:
       GOPATH: "${{ github.workspace }}/go:/usr/share/gocode"
       GOBIN: "${{ github.workspace }}/go/bin"
-      LD_LIBRARY_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/install/lib/"
-      PKG_CONFIG_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/dynamic-build/build/"
+      LD_LIBRARY_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/static-build/install/lib/"
+      PKG_CONFIG_PATH: "${{ github.workspace }}/go/src/github.com/libgit2/git2go/static-build/build/"
     steps:
     - name: Setup Go
       uses: actions/setup-go@v2
@@ -30,36 +30,36 @@ jobs:
     - name: Install Packages
       run: |
         sudo apt install cmake libssh2-1-dev libssl-dev zlib1g-dev libpcre3-dev
-    - name: Setup git2go (dynamic)
+    - name: Setup git2go (static)
       working-directory: "${{ github.workspace }}/go/src/github.com/libgit2/git2go"
       run: |
         git checkout master
         git submodule update --init
-        make test-dynamic
-        make install-dynamic
+        make install-static
+        make test-static
     - name: Build
       run: |
-        go build github.com/jmahler/rgm github.com/jmahler/rgm/rgm
+        go build -tags static github.com/jmahler/rgm github.com/jmahler/rgm/rgm
+    - name: Install
+      run: |
+        go install -tags static github.com/jmahler/rgm github.com/jmahler/rgm/rgm
+        echo "${GOBIN}" >> $GITHUB_PATH
     - name: Run go fmt
       working-directory: "${{ github.workspace }}/go/src/github.com/jmahler/rgm"
       run: |
         DIFF="$(gofmt -d -s .)"
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
-    - name: Install CLI
-      run: |
-        go install github.com/jmahler/rgm/rgm
-        echo "${GOBIN}" >> $GITHUB_PATH
     - name: Test
       run: |
-        go test -coverprofile=profile.cov github.com/jmahler/rgm
+        go test -tags static -coverprofile=profile.cov github.com/jmahler/rgm
         # test the cli but leave out coverage since it isn't useful
-        go test github.com/jmahler/rgm/rgm
+        go test -tags static github.com/jmahler/rgm/rgm
     - name: Integration Tests
       run: |
-        go test -tags=integration github.com/jmahler/rgm
+        go test -tags static,integration github.com/jmahler/rgm
     - name: CLI Integration Tests
       run: |
-        go test -tags=integration github.com/jmahler/rgm/rgm
+        go test -tags static,integration github.com/jmahler/rgm/rgm
     - name: Send Coverage
       uses: shogo82148/actions-goveralls@v1
       with:

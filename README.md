@@ -78,8 +78,8 @@ $ go get -d github.com/pborman/getopt/v2
 $ go get -d golang.org/x/crypto/openpg
 
 $ cd $HOME/go/src/github.com/libgit2/git2go/
-$ make test-dynamic
-$ make install-dynamic
+$ make test-static
+$ make install-static
 </pre>
 
 Build and install rgm.
