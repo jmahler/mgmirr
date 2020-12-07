@@ -4,7 +4,7 @@ rgm - A tool for mirroring multiple RPM Git repos in to one.
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/jmahler/rgm)](https://pkg.go.dev/github.com/jmahler/rgm)
 [![Test Status](https://github.com/jmahler/rgm/workflows/Tests/badge.svg)](https://github.com/jmahler/rgm/actions?query=workflow%3ATests)
-[![Coverage Status](https://coveralls.io/repos/github/jmahler/rgm/badge.svg?branch=master)](https://coveralls.io/github/jmahler/rgm?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/jmahler/rgm/badge.svg?branch=main)](https://coveralls.io/github/jmahler/rgm?branch=main)
 
 # DESCRIPTION
 
