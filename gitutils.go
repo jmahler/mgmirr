@@ -100,6 +100,10 @@ func getExpectedLocalBranches(repo *git.Repository) ([]string, error) {
 			continue
 		}
 		branch, _ := ref.Branch().Name() // fedora/f31
+		// exclude special branch refs like HEAD
+		if branch == "origin/HEAD" {
+			continue
+		}
 		branches = append(branches, branch)
 	}
 
