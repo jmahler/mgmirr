@@ -51,7 +51,7 @@ jobs:
         test -z "${DIFF}" || (echo "${DIFF}" && exit 1)
     - name: Test
       run: |
-        go test -tags static -coverprofile=profile.cov github.com/jmahler/rgm
+        go test -tags static -race -coverprofile=coverage.txt -covermode=atomic github.com/jmahler/rgm
         # test the cli but leave out coverage since it isn't useful
         go test -tags static github.com/jmahler/rgm/rgm
     - name: Integration Tests
@@ -61,6 +61,5 @@ jobs:
       run: |
         go test -tags static,integration github.com/jmahler/rgm/rgm
     - name: Send Coverage
-      uses: shogo82148/actions-goveralls@v1
-      with:
-        path-to-profile: profile.cov
+      run: |
+        bash <(curl -s https://codecov.io/bash)
